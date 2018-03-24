@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="cn.cw.school.mapper.CommentMapper">
+<!-- 查询总的记录数 -->
+<select id="totalTitle" parameterType="int" resultType="int">
+select count(*) from title	
+</select>
+<!-- 查询相应部分条数的主贴 -->
+<select id="showTitle" parameterType="cn.cw.school.po.Page" 
+resultType="cn.cw.school.po.Title">
+select * from title ORDER BY date DESC limit #{startIndex},#{endIndex}	
+</select>
+<!-- 查询相应主贴的所有评论 -->
+<select id="allComment" parameterType="int" 
+resultType="cn.cw.school.po.Comment">
+select * from comment where title_id = #{title_id } limit 0,10
+</select>
+<insert id="addcomment" parameterType="cn.cw.school.po.Comment">
+INSERT INTO comment(context,comment_date,user_id,title_id) VALUES (#{context},#{comment_date},#{user_id},#{title_id})
+</insert>
+<insert id="addtitle" parameterType="cn.cw.school.po.Title">
+INSERT INTO title(title,context,date,user_id) VALUES (#{title},#{context},#{date},#{user_id})
+</insert>
+</mapper>

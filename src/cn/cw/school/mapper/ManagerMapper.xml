@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.cw.school.mapper.ManagerMapper">
+   <!-- 更新学生信息 -->
+	 <update id="maUStudentinfo" parameterType="cn.cw.school.po.Student" >
+       UPDATE student
+       SET student_name =#{student_name}, student_id =#{student_id}, student_sex =#{student_sex}, 
+           student_address =#{student_address}, student_birthday =#{student_birthday}, 
+           student_schooldate =#{student_schooldate}, student_tel =#{student_tel}, 
+           student_ex =#{student_ex}
+       WHERE
+	   student_no = #{student_no}
+    </update>
+    <!-- 更新教师信息 -->
+	 <update id="maUTeacherinfo" parameterType="cn.cw.school.po.Teacher" >
+       UPDATE teacher
+       SET teacher_name =#{teacher_name}, teacher_id =#{teacher_id}, teacher_sex =#{teacher_sex}, 
+           teacher_address =#{teacher_address}, teacher_age =#{teacher_age}, 
+           teacher_work =#{teacher_work}, teacher_tel =#{teacher_tel}, 
+           teacher_ex =#{teacher_ex}
+       WHERE
+	   teacher_no = #{teacher_no}
+    </update>
+    <!-- 更新课程信息 -->
+	 <update id="upacci" parameterType="cn.cw.school.po.Course_classinfo" >
+       UPDATE class_course_info
+       SET classcourse_time = #{classcourse_time}, classcourse_address = #{classcourse_address},
+           test_date = #{test_date}, test_address =#{test_address}
+       WHERE
+	      class_no = #{class_no}
+      AND course_no = #{course_no}
+    </update>
+    <!-- 查找课程下的所有班级-->
+    <select id="findallclass" parameterType="int" 
+    resultType="cn.cw.school.po.CCTinfo">
+       SELECT class_no,class_name,course_no,course_name,teacher_no,teacher_name
+      FROM  class,course,teacher
+      WHERE (class_no,teacher_no) in (SELECT class_no,teacher_no FROM class_course_info WHERE course_no=#{course_no})
+           AND course_no=#{course_no}
+    </select>
+    <!-- 查找指定课程的指定班级-->
+   <delete id="delClassCouse" parameterType="cn.cw.school.po.course_class" >
+    DELETE FROM class_course_info 
+    where class_no = #{class_no}
+      AND course_no = #{course_no}
+   </delete>
+    <!-- 插入成绩 -->
+    <insert id="addgrade" parameterType="java.util.List">
+    INSERT INTO grade VALUES 
+        <foreach collection="list" item="item" index="index" separator=","> 
+        (#{item.student_no},#{item.course_no},#{item.grade_value})
+        </foreach>
+    </insert>
+    <!-- 插入课程班级 -->
+    <insert id="courseAddclass" parameterType="cn.cw.school.po.Course_classinfo">
+    INSERT INTO class_course_info VALUES 
+        (#{course_no},#{class_no},#{teacher_no},#{classcourse_time},#{classcourse_address},#{test_date},#{test_address})        
+    </insert>
+     <!-- 插入新课程 -->
+    <insert id="addCourse" parameterType="cn.cw.school.po.Course">
+    INSERT INTO course VALUES 
+        (#{course_no},#{course_name},#{course_major})
+    </insert>
+     <!-- 插入新班级 -->
+    <insert id="addclass" parameterType="cn.cw.school.po.CCTinfo">
+    INSERT INTO class VALUES 
+        (#{class_no},#{class_name})
+    </insert>
+   <!-- 更新自己密码 -->
+    <update id="updataowerPa" parameterType="cn.cw.school.po.Login" >
+        UPDATE manager
+          SET password=#{password}
+        WHERE
+	      username=#{username}
+    </update>	
+</mapper>

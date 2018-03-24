@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.cw.school.mapper.LoginMapper">
+   <select id="LoginStudent" parameterType="cn.cw.school.po.Login"
+		resultType="int">
+		SELECT COUNT(*) FROM studentinfo WHERE username=#{username} and  password=#{password} 	
+	</select>
+	<select id="LoginTeacher" parameterType="cn.cw.school.po.Login"
+		resultType="int">
+		SELECT COUNT(*) FROM teacherinfo WHERE username=#{username}  and  password=#{password} 
+	</select>
+	<select id="LoginManager" parameterType="cn.cw.school.po.Login"
+		resultType="int">
+		SELECT COUNT(*) FROM manager WHERE username=#{username}  and  password=#{password} 	
+	</select>
+</mapper>

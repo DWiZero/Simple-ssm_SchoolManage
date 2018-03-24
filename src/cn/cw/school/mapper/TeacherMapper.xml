@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.cw.school.mapper.TeacherMapper">
+     <!-- 老师信息 -->
+	<select id="findTeacher" parameterType="int"
+		resultType="cn.cw.school.po.Teacher">
+		select * from teacher WHERE teacher_no=#{teacher_no}	
+	</select>
+	<!-- 老师教授的课程-->
+	<select id="findCourse" parameterType="int"
+		resultType="cn.cw.school.po.Course">
+		SELECT
+	    *
+        FROM
+	    course
+        WHERE
+	    course_no IN (
+		SELECT
+			course_no
+		FROM
+			class_course_info
+		WHERE
+			teacher_no = #{teacher_no}
+	    )
+	</select>
+		<!--老师课程所有班级-->
+	<select id="findStudentClass" parameterType="cn.cw.school.po.teacher_course"
+		resultType="cn.cw.school.po.Course_classinfo">
+		SELECT
+	    class.*, classcourse_time,classcourse_address,test_date,test_address
+        FROM
+	    class,class_course_info
+        WHERE
+	    class.class_no IN (
+		SELECT
+			class_no
+		FROM
+			class_course_info
+		WHERE
+			teacher_no = #{teacher_no}
+		AND course_no = #{course_no}
+	    )
+        AND teacher_no = #{teacher_no}
+        AND course_no = #{course_no}
+	</select>
+    	<!--班级所有学生-->
+	<select id="findClassStudent" parameterType="int"
+		resultType="cn.cw.school.po.Student">
+		SELECT
+	    *
+        FROM
+	    student
+        WHERE
+	    class_no = #{class_no}		
+	</select>
+	<!-- 更新信息 -->
+	 <update id="updataStudentinfo" parameterType="cn.cw.school.po.Teacher" >
+        UPDATE teacher
+          SET teacher_tel =#{teacher_tel}, teacher_ex =#{teacher_ex}
+        WHERE
+	      teacher_no =#{teacher_no}
+    </update>
+    <!-- 新增教师 -->
+	 <insert id="addTeacherinfo" parameterType="cn.cw.school.po.Teacher" >
+        INSERT INTO teacher VALUES 
+        (#{teacher_no},#{teacher_name},#{teacher_sex},#{teacher_age},#{teacher_work},
+        #{teacher_address},#{teacher_id},#{teacher_tel},#{teacher_ex})
+    </insert>
+    <!-- 新增登录 -->
+	 <insert id="addTeacherpa" parameterType="cn.cw.school.po.Login" >
+        INSERT INTO teacherinfo VALUES 
+        (#{username},#{password})
+    </insert>
+	<!-- 更新密码 -->
+    <update id="updataTeacherPa" parameterType="cn.cw.school.po.Login" >
+        UPDATE teacherinfo
+          SET password=#{password}
+        WHERE
+	      username=#{username}
+    </update>		
+</mapper>

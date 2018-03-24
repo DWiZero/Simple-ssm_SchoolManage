@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.cw.school.mapper.StudentMapper">
+     <!-- 学生信息 -->
+	<select id="findStudent" parameterType="int"
+		resultType="cn.cw.school.po.Student">
+		select * from student WHERE student_no=#{student_no}	
+	</select>
+	<!-- 学生课程-->
+	<select id="findCouese" parameterType="int"
+		resultType="cn.cw.school.po.Course">
+		SELECT
+	    *
+        FROM
+	    course
+        WHERE
+	    course_no IN (
+		SELECT
+			course_no
+		FROM
+			class_course_info
+		WHERE
+			class_no = #{class_no}
+	    )
+	</select>
+    <!-- 考试信息 -->
+	 <select id="findTestinfo" parameterType="cn.cw.school.po.course_class"
+		resultType="cn.cw.school.po.Testinfo">
+		SELECT
+	    class.class_name,course.course_name,test_date,test_address
+        FROM
+	    class_course_info AS cci,class,course
+        WHERE
+	    cci.class_no = #{course_class.class_no}
+        AND cci.course_no = #{course_class.course_class.course_no}
+        AND class.class_no =#{course_class.class_no}
+        AND course.course_no=#{course_class.course_no}
+	</select>
+	<!-- 成绩信息 -->
+	<select id="findGrade" parameterType="int"
+		resultType="cn.cw.school.po.Grade">
+		SELECT
+	    course.course_name,grade.grade_value
+        FROM
+	    grade,course
+        WHERE
+	    student_no = #{student_no}
+        AND grade.course_no = course.course_no
+	</select>	
+</mapper>

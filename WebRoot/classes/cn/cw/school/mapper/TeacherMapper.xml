@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.cw.school.mapper.TeacherMapper">
+     <!-- 老师信息 -->
+	<select id="findTeacher" parameterType="int"
+		resultType="cn.cw.school.po.Teacher">
+		select * from teacher WHERE teacher_no=#{teacher_no}	
+	</select>
+	<!-- 老师教授的课程-->
+	<select id="findCourse" parameterType="int"
+		resultType="cn.cw.school.po.Course">
+		SELECT
+	    *
+        FROM
+	    course
+        WHERE
+	    course_no IN (
+		SELECT
+			course_no
+		FROM
+			class_course_info
+		WHERE
+			teacher_no = #{teacher_no}
+	    )
+	</select>
+		<!--老师课程所有班级-->
+	<select id="findStudentClass" parameterType="cn.cw.school.po.teacher_course"
+		resultType="cn.cw.school.po.SudentClass">
+		SELECT
+	    class.*, classcouese_time,classcouese_address
+        FROM
+	    class,class_course_info
+        WHERE
+	    class.class_no IN (
+		SELECT
+			class_no
+		FROM
+			class_course_info
+		WHERE
+			teacher_no = #{tc.teacher_no}
+		AND course_no = #{tc.course_no}
+	    )
+        AND teacher_no = #{tc.teacher_no}
+        AND course_no = #{tc.course_no}
+	</select>
+    	<!--班级所有学生-->
+	<select id="findClassStudent" parameterType="int"
+		resultType="cn.cw.school.po.Sudent">
+		SELECT
+	    *
+        FROM
+	    student
+        WHERE
+	    class_no = #{class_no}		
+	</select>
+</mapper>
